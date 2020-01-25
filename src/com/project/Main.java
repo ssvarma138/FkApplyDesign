@@ -115,12 +115,12 @@ public class Main {
                 row = in.nextInt();
                 column = in.nextInt();
                 while(obj.isValid(size,row,column)==false){
-                    System.out.println("Your position is out of board");
+                    System.out.println("Your position is out of board,Give a position which is inside the board");
                     row=in.nextInt();
                     column=in.nextInt();
                 }
                 while(obj.isOccupied(row,column)){
-                    System.out.println("Your position is out of board,Give a position which is inside the board");
+                    System.out.println("Your position is occupied");
                     row=in.nextInt();
                     column=in.nextInt();
                 }
