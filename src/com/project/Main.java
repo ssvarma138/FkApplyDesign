@@ -96,12 +96,12 @@ public class Main {
                 System.out.println("user 1 : Give Your position ");
                 row=in.nextInt();
                 column=in.nextInt();
-                while(!((row>=0&&row<size) && (column>=0 && column<size))){
+                while(obj.isValid(size,row,column)==false){
                     System.out.println("Your position is out of board,Give a position which is inside the board");
                     row=in.nextInt();
                     column=in.nextInt();
                 }
-                while(obj.board[row][column]!=0){
+                while(obj.isOccupied(row,column)){
                     System.out.println("Position is occupied,enter a unoccupied position");
                     row=in.nextInt();
                     column=in.nextInt();
