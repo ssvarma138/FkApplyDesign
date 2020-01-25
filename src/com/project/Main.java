@@ -1,5 +1,4 @@
 package com.project;
-import java.sql.SQLOutput;
 import java.util.Scanner;
 class TicTacToe{
     int [][] board ;
@@ -126,6 +125,13 @@ public class Main {
                 }
                 obj.putUserInput(2, row, column);
                 move=1;
+            }
+            System.out.println("Modified Board");
+            for(int i=0;i<size;i++){
+                for(int j=0;j<size;j++){
+                    System.out.print(obj.board[i][j]+ " ");
+                }
+                System.out.println();
             }
 
         }
