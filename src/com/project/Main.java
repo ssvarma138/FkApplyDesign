@@ -119,7 +119,7 @@ public class Main {
                     column=in.nextInt();
                 }
                 while(obj.isOccupied(row,column)){
-                    System.out.println("Your position is occupied");
+                    System.out.println("Your position is occupied,enter a unoccupied position");
                     row=in.nextInt();
                     column=in.nextInt();
                 }
