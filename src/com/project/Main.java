@@ -14,19 +14,19 @@ class TicTacToe{
         }
         total_occupied=0;
     }
-    private void putUserInput(int value,int row,int column)
+    void putUserInput(int value,int row,int column)
     {
         board[row][column]=value;
         total_occupied=total_occupied+1;
     }
-    private boolean isGameOver(int size)
+     boolean isGameOver(int size)
     {
         if( checkRow(size)||checkColumn(size)||checkDiagonal(size) ){
             return true;
         }
         return false;
     }
-    private boolean checkRow(int size)
+     boolean checkRow(int size)
     {
         for(int i=0;i<size;i++){
             if((board[i][0]!=0) && ((board[i][0]==board[i][1]) && (board[i][1]==board[i][2])))
@@ -37,7 +37,7 @@ class TicTacToe{
 
         return false;
     }
-    private boolean checkColumn(int size)
+     boolean checkColumn(int size)
     {
         for(int i=0;i<size;i++){
             if((board[0][i]!=0) && ((board[0][i]==board[1][i]) && (board[1][i]==board[2][i])))
@@ -47,12 +47,25 @@ class TicTacToe{
         }
         return false;
     }
-    private boolean checkDiagonal(int size)
+     boolean checkDiagonal(int size)
     {
         if ( board[0][0]!=0 && (board[0][0] == board[1][1] && board[1][1] == board[2][2]) )
             return(true);
         if ( board[0][2]!=0 && (board[0][2] == board[1][1] && board[1][1] == board[2][0]) )
             return(true);
+
+        return false;
+    }
+    boolean isValid(int size,int row,int column)
+    {
+        if((row>=0&&row<size) && (column>=0 && column<size))
+        {
+            return true;
+        }
+        return false;
+    }
+    boolean isOccupied(int row,int column){
+        if(board[row][column]!=0) return true;
 
         return false;
     }
@@ -101,13 +114,13 @@ public class Main {
                 System.out.println("user 2 : Give Your Position");
                 row = in.nextInt();
                 column = in.nextInt();
-                while(!((row>=0&&row<size) && (column>=0 && column<size))){
+                while(obj.isValid(size,row,column)==false){
                     System.out.println("Your position is out of board");
                     row=in.nextInt();
                     column=in.nextInt();
                 }
-                while(obj.board[row][column]!=0){
-                    System.out.println("Position is occupied,enter a unoccupied position");
+                while(obj.isOccupied(row,column)){
+                    System.out.println("Your position is out of board,Give a position which is inside the board");
                     row=in.nextInt();
                     column=in.nextInt();
                 }
