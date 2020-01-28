@@ -1,6 +1,8 @@
 package com.project;
 import java.util.Scanner;
 import java.util.Random;
+import java.util.Stack;
+
 class Board {
     int [][] board;
     int row;
@@ -36,40 +38,51 @@ class Board {
             System.out.println();
         }
     }
-    int check3_3(int size,int row,int column,int [][] board){
+    void undo(int row,int column){
+        board[row][column]=0;
+    }
+    int check1(int size,int row,int column,int [][] board){
+        int cnt=0,val;
         for(int i=0;i<size;i++){
-            if((board[row+i][column+0]!=0) && ((board[row+i][column+0]==board[row+i][column+1]) && (board[row+i][column+1]==board[row+i][column+2])))
-            {
-                if(board[row+i][column+0]==1){
-                    return 1;
+             cnt=0;val=board[row+i][column];
+            for(int j=0;j<size;j++) {
+                if(board[row+i][column+j]==val){
+                    cnt++;                                              //checking for minimum size .i.e 3*3,4*4....
                 }
-                else{
-                    return 2;
-                }
+            }
+            if(val!=0 && cnt==size){
+                return val;
             }
         }
         for(int i=0;i<size;i++){
-            if((board[row+0][column+i]!=0) && ((board[row+0][column+i]==board[row+1][column+i]) && (board[row+1][column+i]==board[row+2][column+i])))
-            {
-                if(board[row+0][column+i]==1)
-                    return 1;
-                else
-                    return 2;
+             cnt=0;val=board[row][column+i];
+            for(int j=0;j<size;j++) {
+                if(board[row+j][column+i]==val){
+                    cnt++;
+                }
+            }
+            if(val!=0 && cnt==size){
+                return val;
             }
         }
-        if ( board[row+0][column+0]!=0 && (board[row+0][column+0] == board[row+1][column+1] && board[row+1][column+1] == board[row+2][column+2]) ) {
-            if(board[row+0][column+0]==1) return 1;
-            return 2;
+         cnt=0;val=board[row][column];
+        for(int i=0;i<size;i++){
+            if(board[i][i]==val) cnt++;
         }
-        if ( board[row+0][column+2]!=0 && (board[row+0][column+2] == board[row+1][column+1] && board[row+1][column+1] == board[row+2][column+0]) ) {
-            if(board[row+0][column+2]==1) return 1;
-            return 2;
+        if(val!=0 && cnt==size) return val;
+
+        cnt=0;val=board[row+size-1][column+size-1];
+
+        for(int i=size-1;i>=0;i--){
+            if(board[i][i]==val) cnt++;
         }
+        if(val!=0 && cnt==size) return val;
+
         return 0;
     }
     int check(int size,int row,int column,int div){
-        if(size==3){
-            return check3_3(size,row,column,board);
+        if(size/div==1){
+            return check1(size,row,column,board);
         }
         else{
             int [][] temp=new int[3][3];
@@ -90,7 +103,7 @@ class Board {
             temp[2][2]=check(inc,row+2*inc,column+2*inc,div);
 
 
-            return check3_3(3,0,0,temp);
+            return check1(3,0,0,temp);
         }
     }
 
@@ -109,18 +122,24 @@ class Player{
         this.isComputer=computer;
     }
 }
+
 class TicTacToe{
     Scanner in=new Scanner(System.in);
     Random r=new Random();
+
     Board board;
     int total_filled=0;
     int size;
+    int div;
+    int turn=1;
     TicTacToe(int size){
         this.size=size;
         board=new Board(size);
+        if(size%3==0) div=3;
+        if(size%4==0) div=4;
     }
     boolean isOver(Player p1,Player p2){
-        int result=board.check(size,0,0,3);
+        int result=board.check(size,0,0,div);
         if(result==1){
             p1.iswinner=1;
             return true;
@@ -157,8 +176,34 @@ class TicTacToe{
             }
         }
         board.userInput(row,column,p.user);
+
         total_filled++;
         board.display(size);
+        if(turn==1) turn =2;
+        else if(turn ==2) turn =1;
+            System.out.println("press 9 to undo the move else press 10");
+            int undo1 = in.nextInt();
+            if(undo1==9){
+                board.undo(row,column);
+                if(turn==1) turn =2;
+                else if(turn ==2) turn =1;
+            }
+
+    }
+    void start(Player p1,Player p2){
+
+        while(!isOver(p1,p2) && total_filled!=size*size){
+            if(turn==1){
+                System.out.println("Player 1 move");
+                move(p1);
+
+            }
+            else{
+                System.out.println("Player 2 move");
+                move(p2);
+
+            }
+        }
     }
 }
 public class Main{
@@ -181,19 +226,8 @@ public class Main{
         System.out.println("If you want to play M * M size ,enter value of M");
         int size=in.nextInt();
         TicTacToe game=new TicTacToe(size);
-        int move=1;
-        while(!game.isOver(p1,p2) && game.total_filled!=size*size){
-            if(move==1){
-                System.out.println("Player 1 move");
-                game.move(p1);
-                move=2;
-            }
-            else{
-                System.out.println("Player 2 move");
-                game.move(p2);
-                move=1;
-            }
-        }
+        game.start(p1,p2);
+
         if(p1.iswinner==1){
             System.out.println("Player 1 is a winner");
         }
