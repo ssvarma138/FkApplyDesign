@@ -1,219 +1,207 @@
 package com.project;
 import java.util.Scanner;
-class TicTacToe{
-    int [][] board ;
-    int total_occupied ;
-    TicTacToe(int size)
-    {
-        board=new int[size][size];                                     //let it be size 3*3  now.change later implementation
-        for(int i=0;i<size;i++){
-            for(int j=0;j<size;j++){
-                board[i][j]=0;
+import java.util.Random;
+class Board {
+    int [][] board;
+    int row;
+    int column;
+    Board(int size) {
+        this.row = size;
+        this.column = size;
+        board = new int[size][size];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                board[i][j] = 0;
             }
         }
-        total_occupied=0;
     }
-    void putUserInput(int value,int row,int column)
-    {
-        board[row][column]=value;
-        total_occupied=total_occupied+1;
-    }
-    boolean isGameOver(int size)
-    {
-        if( checkRow(size)||checkColumn(size)||checkDiagonal(size) ){
-            return true;
-        }
-        return false;
-    }
-    boolean checkRow(int size)
-    {
-        for(int i=0;i<size;i++){
-            if((board[i][0]!=0) && ((board[i][0]==board[i][1]) && (board[i][1]==board[i][2])))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    boolean checkColumn(int size)
-    {
-        for(int i=0;i<size;i++){
-            if((board[0][i]!=0) && ((board[0][i]==board[1][i]) && (board[1][i]==board[2][i])))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-    boolean checkDiagonal(int size)
-    {
-        if ( board[0][0]!=0 && (board[0][0] == board[1][1] && board[1][1] == board[2][2]) )
-            return(true);
-        if ( board[0][2]!=0 && (board[0][2] == board[1][1] && board[1][1] == board[2][0]) )
-            return(true);
-
-        return false;
-    }
-    boolean isValid(int size,int row,int column)
-    {
-        if((row>=0&&row<size) && (column>=0 && column<size))
-        {
+    boolean isValid(int row,int column,int size){
+        if((row>=0 && row<size) && (column>=0 && column<size)){
             return true;
         }
         return false;
     }
     boolean isOccupied(int row,int column){
-        if(board[row][column]!=0) return true;
+        if(board[row][column]==0) return false;
+        return true;
+    }
+    void userInput(int row,int column,int value){
+        board[row][column]=value;
+    }
+    void display(int size){
+        for(int i=0;i<size;i++){
+            for(int j=0;j<size;j++){
+                System.out.print(board[i][j]);
+            }
+            System.out.println();
+        }
+    }
+    int check3_3(int size,int row,int column,int [][] board){
+        for(int i=0;i<size;i++){
+            if((board[row+i][column+0]!=0) && ((board[row+i][column+0]==board[row+i][column+1]) && (board[row+i][column+1]==board[row+i][column+2])))
+            {
+                if(board[row+i][column+0]==1){
+                    return 1;
+                }
+                else{
+                    return 2;
+                }
+            }
+        }
+        for(int i=0;i<size;i++){
+            if((board[row+0][column+i]!=0) && ((board[row+0][column+i]==board[row+1][column+i]) && (board[row+1][column+i]==board[row+2][column+i])))
+            {
+                if(board[row+0][column+i]==1)
+                    return 1;
+                else
+                    return 2;
+            }
+        }
+        if ( board[row+0][column+0]!=0 && (board[row+0][column+0] == board[row+1][column+1] && board[row+1][column+1] == board[row+2][column+2]) ) {
+            if(board[row+0][column+0]==1) return 1;
+            return 2;
+        }
+        if ( board[row+0][column+2]!=0 && (board[row+0][column+2] == board[row+1][column+1] && board[row+1][column+1] == board[row+2][column+0]) ) {
+            if(board[row+0][column+2]==1) return 1;
+            return 2;
+        }
+        return 0;
+    }
+    int check(int size,int row,int column,int div){
+        if(size==3){
+            return check3_3(size,row,column,board);
+        }
+        else{
+            int [][] temp=new int[3][3];
+            for(int i=0;i<3;i++){
+                for(int j=0;j<3;j++){
+                    temp[i][j]=0;
+                }
+            }
+            int inc=size/div;
+            temp[0][0]=check(inc,row,column,div);
+            temp[0][1]=check(inc,row,column+inc,div);
+            temp[0][2]=check(inc,row,column+2*inc,div);
+            temp[1][0]=check(inc,row+inc,column,div);
+            temp[1][1]=check(inc,row+inc,column+inc,div);
+            temp[1][2]=check(inc,row+inc,column+2*inc,div);
+            temp[2][0]=check(inc,row,column,div);
+            temp[2][1]=check(inc,row+2*inc,column+inc,div);
+            temp[2][2]=check(inc,row+2*inc,column+2*inc,div);
 
-        return false;
+
+            return check3_3(3,0,0,temp);
+        }
     }
 
 }
-public class Main {
-    void HumanHuman(int size,TicTacToe obj){
-        int move=1;      //let default move be user1
-        int row=0,column=0;
-        Scanner in=new Scanner(System.in);
-        while(obj.isGameOver(size)==false&& obj.total_occupied!=size*size)
-        {
-
-            if(move==1)
-            {
-                System.out.println("user 1 : Give Your position ");
-                row=in.nextInt();
-                column=in.nextInt();
-                while(obj.isValid(size,row,column)==false){
-                    System.out.println("Your position is out of board,Give a position which is inside the board");
-                    row=in.nextInt();
-                    column=in.nextInt();
-                }
-                while(obj.isOccupied(row,column)){
-                    System.out.println("Position is occupied,enter a unoccupied position");
-                    row=in.nextInt();
-                    column=in.nextInt();
-                }
-                obj.putUserInput(1,row,column);
-                move=2;
-            }
-            else if(move==2)
-            {
-                System.out.println("user 2 : Give Your Position");
-                row = in.nextInt();
-                column = in.nextInt();
-                while(obj.isValid(size,row,column)==false){
-                    System.out.println("Your position is out of board,Give a position which is inside the board");
-                    row=in.nextInt();
-                    column=in.nextInt();
-                }
-                while(obj.isOccupied(row,column)){
-                    System.out.println("Your position is occupied");
-                    row=in.nextInt();
-                    column=in.nextInt();
-                }
-                obj.putUserInput(2, row, column);
-                move=1;
-            }
-            System.out.println("Modified Board");
-            for(int i=0;i<size;i++){
-                for(int j=0;j<size;j++){
-                    System.out.print(obj.board[i][j]+ " ");
-                }
-                System.out.println();
-            }
-
-        }
-        if(obj.isGameOver(size)==false && obj.total_occupied==size*size){
-            System.out.println("Match Drawn");
-        }
-        else {
-            if(move==1)
-            {
-                System.out.println("User 2 is a Winner!!");
-            }
-            else
-            {
-                System.out.println("User 1 is a Winner!!");
-            }
-        }
+class Player{
+    private static int id=1;
+    int isComputer ;
+    int user;
+    int iswinner;
+    Player(){
+        this.user=id;
+        id++;
+        this.iswinner=0;
     }
-    void HumanComp(int size,TicTacToe obj){
-        int move=1;      //let default move be user1
-        int row=0,column=0;
-        Scanner in=new Scanner(System.in);
-        while(obj.isGameOver(size)==false&& obj.total_occupied!=size*size)
-        {
-
-            if(move==1)
-            {
-                System.out.println("Give Your position ");
-                row=in.nextInt();
-                column=in.nextInt();
-                while(obj.isValid(size,row,column)==false){
-                    System.out.println("Your position is out of board,Give a position which is inside the board");
-                    row=in.nextInt();
-                    column=in.nextInt();
-                }
-                while(obj.isOccupied(row,column)){
-                    System.out.println("Position is occupied,enter a unoccupied position");
-                    row=in.nextInt();
-                    column=in.nextInt();
-                }
-                obj.putUserInput(1,row,column);
-                move=2;
-            }
-            else if(move==2)
-            {
-                row = (int)(3.0 * Math.random());
-                column = (int)(3.0 * Math.random());
-
-                while(obj.isOccupied(row,column)){
-                    row = (int)(3.0 * Math.random());
-                    column = (int)(3.0 * Math.random());
-                }
-                System.out.println("Computer choice " + row +" " +column);
-                obj.putUserInput(2,row,column);
-                move=1;
-            }
-            System.out.println("Modified Board");
-            for(int i=0;i<size;i++){
-                for(int j=0;j<size;j++){
-                    System.out.print(obj.board[i][j]+ " ");
-                }
-                System.out.println();
-            }
-
-        }
-        if(obj.isGameOver(size)==false && obj.total_occupied==size*size){
-            System.out.println("Match Drawn");
-        }
-        else {
-            if(move==1)
-            {
-                System.out.println("User 2 is a Winner!!");
-            }
-            else
-            {
-                System.out.println("User 1 is a Winner!!");
-            }
-        }
+    void setIsComputer(int computer){
+        this.isComputer=computer;
     }
-    public static void main(String[] args) {
-        System.out.println("Enter the size of Board you want to play");
-        Scanner in=new Scanner(System.in);
-        int size = in.nextInt();
-        TicTacToe obj=new TicTacToe(size);
-
-        System.out.println("press 1 for Human Human");
-        System.out.println("press 2 for Human comp");
-        Main main =new Main();
-        int type=in.nextInt();
-        if(type==1){
-            main.HumanHuman(size,obj);
+}
+class TicTacToe{
+    Scanner in=new Scanner(System.in);
+    Random r=new Random();
+    Board board;
+    int total_filled=0;
+    int size;
+    TicTacToe(int size){
+        this.size=size;
+        board=new Board(size);
+    }
+    boolean isOver(Player p1,Player p2){
+        int result=board.check(size,0,0,3);
+        if(result==1){
+            p1.iswinner=1;
+            return true;
+        }
+        if(result==2){
+            p2.iswinner=1;
+            return true;
+        }
+        return false;
+    }
+    void move(Player p){
+        int row;
+        int column;
+        if(p.isComputer==1){
+            row = r.nextInt(size);
+            column = r.nextInt(size);
+            while(!board.isOccupied(row,column)){
+                row = r.nextInt(size);
+                column = r.nextInt(size);
+            }
         }
         else{
-            main.HumanComp(size,obj);
+            row=in.nextInt();
+            column=in.nextInt();
+            while(!board.isValid(row,column,size)){
+                System.out.println("Your input is out of board,enter again");
+                row=in.nextInt();
+                column=in.nextInt();
+            }
+            while(board.isOccupied(row,column)){
+                System.out.println("Your input position is filled,enter again");
+                row=in.nextInt();
+                column=in.nextInt();
+            }
         }
+        board.userInput(row,column,p.user);
+        total_filled++;
+        board.display(size);
+    }
+}
+public class Main{
+    public static void main(String[] args) {
+        Scanner in =new Scanner(System.in);
+        System.out.println("Press 1 : Game between humans");
+        System.out.println("press 2 : Game between Human and computer");
 
+        int type=in.nextInt();
+        Player p1=new Player();
+        Player p2=new Player();
+        if(type==1){
+            p1.setIsComputer(0);
+            p2.setIsComputer(0);
+        }
+        if(type==2){
+            p1.setIsComputer(0);
+            p2.setIsComputer(1);
+        }
+        System.out.println("If you want to play M * M size ,enter value of M");
+        int size=in.nextInt();
+        TicTacToe game=new TicTacToe(size);
+        int move=1;
+        while(!game.isOver(p1,p2) && game.total_filled!=size*size){
+            if(move==1){
+                System.out.println("Player 1 move");
+                game.move(p1);
+                move=2;
+            }
+            else{
+                System.out.println("Player 2 move");
+                game.move(p2);
+                move=1;
+            }
+        }
+        if(p1.iswinner==1){
+            System.out.println("Player 1 is a winner");
+        }
+        else if(p2.iswinner==1){
+            System.out.println("Player 2 is a winner");
+        }
+        else{
+            System.out.println("Match drawn");
+        }
     }
 }
