@@ -1,52 +1,114 @@
 package com.project;
 import java.util.Scanner;
 import java.util.Random;
-import java.util.Stack;
 
-class Board {
-    int [][] board;
-    int row;
-    int column;
-    Board(int size) {
-        this.row = size;
-        this.column = size;
-        board = new int[size][size];
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                board[i][j] = 0;
-            }
-        }
+interface Board{
+    public void fill(int row,int column,int id);
+    public boolean isValidMove(int row,int column);
+    public boolean isMoveOccupied(int row,int column);
+
+}
+interface Game{
+    public void start(Player p1,Player p2);
+    //  public void undo();
+    public boolean isGameOver(Player p1,Player p2);
+
+}
+class SquareBoard implements Board{
+    public int[][] table;
+    private int size;
+    SquareBoard(int size){
+        this.table=new int[size][size];
+        this.size=size;
     }
-    boolean isValid(int row,int column,int size){
-        if((row>=0 && row<size) && (column>=0 && column<size)){
+    public void fill(int row,int column,int id){
+        this.table[row][column]=id;
+    }
+    public boolean isValidMove(int row,int column){
+        if((row>=0 && row < this.size) && (column >= 0 && column < this.size)){
             return true;
         }
         return false;
     }
-    boolean isOccupied(int row,int column){
-        if(board[row][column]==0) return false;
-        return true;
+    public boolean isMoveOccupied(int row,int column){
+        if(this.table[row][column]!=0)
+            return true;
+        return false;
     }
-    void userInput(int row,int column,int value){
-        board[row][column]=value;
+    public int getVal(int row,int column){
+        return this.table[row][column];
     }
-    void display(int size){
-        for(int i=0;i<size;i++){
-            for(int j=0;j<size;j++){
-                System.out.print(board[i][j]);
+
+}
+
+class SquareTicTicToe implements Game{
+    private SquareBoard board ;
+    private int total_occupied=0;
+    private int mul;
+    private int size;
+    SquareTicTicToe(int size,int mul){
+        board=new SquareBoard(size);
+        this.mul=mul;
+        this.size=size;
+    }
+    public int[] getUserInput(Player p){
+        int [] input =new int[2];
+        int row,column;
+        Random r=new Random();
+        Scanner in =new Scanner(System.in);
+        if(p.iscomputer==1){
+            row= r.nextInt(this.size);
+            column=r.nextInt(this.size);
+            while(board.isMoveOccupied(row,column)){
+                System.out.println("Your move is filled,Enter unfilled position");
+                row= r.nextInt(this.size);
+                column=r.nextInt(this.size);
             }
-            System.out.println();
+        }
+        else{
+            row= in.nextInt();
+            column=in.nextInt();
+            while(!board.isValidMove(row,column)){
+                System.out.println("Your move is out of board,Enter again");
+                row= in.nextInt();
+                column=in.nextInt();
+            }
+            while(board.isMoveOccupied(row,column)){
+                System.out.println("Your move is filled,Enter unfilled position");
+                row= in.nextInt();
+                column=in.nextInt();
+            }
+        }
+        input[0]=row;
+        input[1]=column;
+        return input;
+    }
+    public void move(int[] input,int id){
+        board.fill(input[0],input[1],id);
+    }
+    public void start(Player p1,Player p2){
+        int turn=0;
+        int [] input;
+        while(!isGameOver(p1,p2)){
+            System.out.println("Player " + (turn+1) + " move");
+            if(turn==0) {
+                input = getUserInput(p1);
+                move(input,p1.getUserId());
+            }
+            else{
+                input = getUserInput(p2);
+                move(input,p2.getUserId());
+            }
+            total_occupied++;
+            turn = 1-turn ;
         }
     }
-    void undo(int row,int column){
-        board[row][column]=0;
-    }
-    int check1(int size,int row,int column,int [][] board){
+    int checkBaseMatrix(int size,int row,int column,int[][] table){
         int cnt=0,val;
         for(int i=0;i<size;i++){
-             cnt=0;val=board[row+i][column];
+            cnt=0;val=board.getVal(row+i,column);
             for(int j=0;j<size;j++) {
-                if(board[row+i][column+j]==val){
+                if(board.getVal(row+i,column+j)==val){
                     cnt++;                                              //checking for minimum size .i.e 3*3,4*4....
                 }
             }
@@ -55,9 +117,9 @@ class Board {
             }
         }
         for(int i=0;i<size;i++){
-             cnt=0;val=board[row][column+i];
+            cnt=0;val=board.table[row][column+i];
             for(int j=0;j<size;j++) {
-                if(board[row+j][column+i]==val){
+                if(board.table[row+j][column+i]==val){
                     cnt++;
                 }
             }
@@ -65,168 +127,118 @@ class Board {
                 return val;
             }
         }
-         cnt=0;val=board[row][column];
+        cnt=0;val=board.table[row][column];
         for(int i=0;i<size;i++){
-            if(board[i][i]==val) cnt++;
+            if(board.table[i][i]==val) cnt++;
         }
         if(val!=0 && cnt==size) return val;
 
-        cnt=0;val=board[row+size-1][column+size-1];
+        cnt=0;val=board.table[row+size-1][column+size-1];
 
         for(int i=size-1;i>=0;i--){
-            if(board[i][i]==val) cnt++;
+            if(board.table[i][i]==val) cnt++;
         }
         if(val!=0 && cnt==size) return val;
 
         return 0;
     }
-    int check(int size,int row,int column,int div){
-        if(size/div==1){
-            return check1(size,row,column,board);
+    public int checkrec(int size,int row,int column){
+        if(size/mul==1){
+            return checkBaseMatrix(size,row,column,board.table);
         }
-        else{
-            int [][] temp=new int[3][3];
-            for(int i=0;i<3;i++){
-                for(int j=0;j<3;j++){
-                    temp[i][j]=0;
-                }
+        int [][] res=new int[mul][mul];
+        int trow=0,tcol=0,i=0,j=0;
+        while(row+trow<size){
+            j=0;
+            while(column+tcol<size){
+                res[i][j]=checkrec(size/mul,row+trow,column+tcol);
+                tcol+=mul;
+                j++;
             }
-            int inc=size/div;
-            temp[0][0]=check(inc,row,column,div);
-            temp[0][1]=check(inc,row,column+inc,div);
-            temp[0][2]=check(inc,row,column+2*inc,div);
-            temp[1][0]=check(inc,row+inc,column,div);
-            temp[1][1]=check(inc,row+inc,column+inc,div);
-            temp[1][2]=check(inc,row+inc,column+2*inc,div);
-            temp[2][0]=check(inc,row,column,div);
-            temp[2][1]=check(inc,row+2*inc,column+inc,div);
-            temp[2][2]=check(inc,row+2*inc,column+2*inc,div);
-
-
-            return check1(3,0,0,temp);
+            trow+=mul;
+            i++;
         }
+        return checkBaseMatrix(mul,0,0,res);
+    }
+    public boolean isGameOver(Player p1,Player p2){
+        int result=checkrec(this.size,0,0);
+        if(result==1) {
+            p1.iswinner = 1;
+            return true;
+        }
+        if(result==2) {
+            p2.iswinner = 1;
+            return true;
+        }
+        if(total_occupied==size*size) return true;
+        return false;
+    }
+
+}
+class HexagonalTicTacToe implements Game{
+
+    HexagonalTicTacToe(int size){
+
+    }
+    public void start(Player p1,Player p2){
+
+    }
+
+    public boolean isGameOver(Player p1,Player p2){
+        return true;
     }
 
 }
 class Player{
     private static int id=1;
-    int isComputer ;
-    int user;
-    int iswinner;
+    private int userid;
+    public int iscomputer;
+    public int iswinner=0;
     Player(){
-        this.user=id;
-        id++;
-        this.iswinner=0;
+        this.userid=id;
+        id=id+1;
     }
-    void setIsComputer(int computer){
-        this.isComputer=computer;
+    public int getUserId(){
+        return this.userid;
     }
-}
-
-class TicTacToe{
-    Scanner in=new Scanner(System.in);
-    Random r=new Random();
-
-    Board board;
-    int total_filled=0;
-    int size;
-    int div;
-    int turn=1;
-    TicTacToe(int size){
-        this.size=size;
-        board=new Board(size);
-        if(size%3==0) div=3;
-        if(size%4==0) div=4;
-    }
-    boolean isOver(Player p1,Player p2){
-        int result=board.check(size,0,0,div);
-        if(result==1){
-            p1.iswinner=1;
-            return true;
-        }
-        if(result==2){
-            p2.iswinner=1;
-            return true;
-        }
-        return false;
-    }
-    void move(Player p){
-        int row;
-        int column;
-        if(p.isComputer==1){
-            row = r.nextInt(size);
-            column = r.nextInt(size);
-            while(!board.isOccupied(row,column)){
-                row = r.nextInt(size);
-                column = r.nextInt(size);
-            }
-        }
-        else{
-            row=in.nextInt();
-            column=in.nextInt();
-            while(!board.isValid(row,column,size)){
-                System.out.println("Your input is out of board,enter again");
-                row=in.nextInt();
-                column=in.nextInt();
-            }
-            while(board.isOccupied(row,column)){
-                System.out.println("Your input position is filled,enter again");
-                row=in.nextInt();
-                column=in.nextInt();
-            }
-        }
-        board.userInput(row,column,p.user);
-
-        total_filled++;
-        board.display(size);
-        if(turn==1) turn =2;
-        else if(turn ==2) turn =1;
-            System.out.println("press 9 to undo the move else press 10");
-            int undo1 = in.nextInt();
-            if(undo1==9){
-                board.undo(row,column);
-                if(turn==1) turn =2;
-                else if(turn ==2) turn =1;
-            }
-
-    }
-    void start(Player p1,Player p2){
-
-        while(!isOver(p1,p2) && total_filled!=size*size){
-            if(turn==1){
-                System.out.println("Player 1 move");
-                move(p1);
-
-            }
-            else{
-                System.out.println("Player 2 move");
-                move(p2);
-
-            }
-        }
+    public void setisComputer(int val){
+        this.iscomputer=val;
     }
 }
 public class Main{
     public static void main(String[] args) {
-        Scanner in =new Scanner(System.in);
-        System.out.println("Press 1 : Game between humans");
-        System.out.println("press 2 : Game between Human and computer");
-
-        int type=in.nextInt();
+        Scanner in = new Scanner(System.in);
+        System.out.println("press 1 : Human Human");
+        System.out.println("press 2 : Human Computer");
+        int input;
+        input=in.nextInt();
         Player p1=new Player();
         Player p2=new Player();
-        if(type==1){
-            p1.setIsComputer(0);
-            p2.setIsComputer(0);
+        if(input==1){
+            p1.setisComputer(0);
+            p2.setisComputer(0);
         }
-        if(type==2){
-            p1.setIsComputer(0);
-            p2.setIsComputer(1);
+        if(input==2){
+            p1.setisComputer(0);
+            p2.setisComputer(1);
         }
-        System.out.println("If you want to play M * M size ,enter value of M");
-        int size=in.nextInt();
-        TicTacToe game=new TicTacToe(size);
-        game.start(p1,p2);
+        System.out.println("press 1 : square TicTacToe");
+        System.out.println("press 2 : Hexagonal TicTacToe");
+
+        input = in.nextInt();
+
+        int size,mul=0;
+        System.out.println("enter the size of board.If board is  M * M ,enter the value of M");
+        size = in.nextInt();
+        if(size%3==0) mul=3;
+        if(size%4==0) mul=4;
+        if(input==1){
+            SquareTicTicToe game = new SquareTicTicToe(size,mul);
+            game.start(p1,p2);
+        }
+        if(input==2){
+            HexagonalTicTacToe game =new HexagonalTicTacToe(size);
+        }
 
         if(p1.iswinner==1){
             System.out.println("Player 1 is a winner");
@@ -235,7 +247,7 @@ public class Main{
             System.out.println("Player 2 is a winner");
         }
         else{
-            System.out.println("Match drawn");
+            System.out.println("Match Drawn");
         }
     }
 }
