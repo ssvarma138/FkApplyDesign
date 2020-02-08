@@ -1,0 +1,153 @@
+
+
+__________________________________________________________________________________________________________	
+					DESIGN DOCUMENT TEMPLATE
+__________________________________________________________________________________________________________	
+
+
+
+__________________________________________________________________________________________________________	
+					PROJECT GAME DESIGN
+__________________________________________________________________________________________________________	
+
+
+NOTE: 
+
+Design Document Must Contain Following Things:
+	Describe Each Feature With Status, Design Decision/Choices and Test Implementation
+	Feature Implementation 	: Replaced <STATUS> with - Completed Or NotCompleted Or PartiallyCompleted
+	Design Decision 	: Done along with Detailed Description
+	Test Implementation    	: All Test Cases Covered For Each Feature
+
+Add Online Google Sheet URLs, Branch and Last Update	
+	Code Branch 	 : Fill Which Branch Should I See Your Code If Not Development Branch?	
+	Last Code Commit : When You Committed Your Last Changes In Above Mentioned Branch?
+
+
+SECTION  I: First Iteration Game Project Design
+	[Till Phase III or Phase IV Submitted Upto 29th January, 2020]
+
+PART I: Design Diagrams
+	Sequence Diagrams
+	Class Diagrams
+	Dependency Diagrams
+
+PART II : Common Design/Choices and Conventions/Assumptions and Detailed Descriptions etc.
+
+PART III : Feature Specific Design/Choices and Conventions/Assumptions 
+
+GameDesign v2.0	- Requirement I
+	<COMPLETED> - 1. Tic-Tac-Toe consists of 3x3 Square Cells
+		Feature Specific Design Decision?
+	<COMPLETED> - 2. Game Between Two Humans
+		Feature Specific Design Decision?
+	<COMPLETED> - 3. Game Between Human and Machine
+		Feature Specific Design Decision?
+	<COMPLETED> - 4. Winning Criteria - 3 Cells in Row/Column/Diagonal are in Same State.
+		Feature Specific Design Decision?
+	<COMPLETED> - 5. Announce Winning Player
+		Feature Specific Design Decision?
+
+GameDesign v2.0	- Requirement II
+	<COMPLETED> - 6. Enhanced Tic-Tac-Toe Game Consist of 9x9 Squares...
+		Feature Specific Design Decision?
+	<COMPLETED> - 7. Enhanced Tic-Tac-Toe will continue to expand in depth levels...
+		Feature Specific Design Decision?
+	<COMPLETED> - 8. Extend Game to 4x4 Board
+		Feature Specific Design Decision?
+	<COMPLETED> - 9. Human Player is Biased...
+		Feature Specific Design Decision?
+	<NOT COMPLETED> - 10. Storing and Retrieving Game State
+		Feature Specific Design Decision?
+	<NOT COMPLETED> - 11. Store Players Game Statistics: Leaderboard
+		Feature Specific Design Decision?
+
+GameDesign v3.0	- Requirement III
+	<NOT COMPLETED> - 12. Super Tic-Tac-Toe Game Extends Enhanced Tic-Tac-Toe Game...
+		Feature Specific Design Decision?
+	<NOT COMPLETED> - 13. Design Winning and Losing Criterias On All Edges...
+		Feature Specific Design Decision?
+	<NOT COMPLETED> - 14. Incorporate Irregular shaped Hexagonal Boards
+		Feature Specific Design Decision?
+
+GameDesign v4.0	- Requirement IV
+	<STATUS> - 15. Incorporate Biased Game Board
+		Feature Specific Design Decision?
+	<STATUS> - 16.Incorporate Connect Four Game In Design
+		Feature Specific Design Decision?
+	<STATUS> - 17. Discover Newer Abstract Types
+		Feature Specific Design Decision?
+	<STATUS> - 18. Refactor and Reuse Code In Both Games
+		Feature Specific Design Decision?
+
+	
+SECTION II: Second Iteration[Refactoring/Redesign] Game Project Design 
+	[Till Phase III or Phase IV Submitted Upto 03rd February, 2020]
+
+PART I : Common Design/Choices, Conventions and Assumptions
+	Sequence Diagrams
+	Class Diagrams
+	Dependency Diagrams
+
+PART II : Common Design/Choices and Conventions/Assumptions and Detailed Descriptions etc.
+
+PART III: Feature Specific Design/Choices, Conventions and Assumptions	
+
+GameDesign v2.0	- Requirement I
+	<COMPLETED> - 1. Tic-Tac-Toe consists of 3x3 Square Cells
+		Feature Specific Design Decision?
+	<COMPLETED> - 2. Game Between Two Humans
+		Feature Specific Design Decision?
+	<COMPLETED> - 3. Game Between Human and Machine
+		Feature Specific Design Decision?
+	<COMPLETED> - 4. Winning Criteria - 3 Cells in Row/Column/Diagonal are in Same State.
+		Feature Specific Design Decision?
+	<COMPLETED> - 5. Announce Winning Player
+		Feature Specific Design Decision?
+
+GameDesign v2.0	- Requirement II
+	<COMPLETED> - 6. Enhanced Tic-Tac-Toe Game Consist of 9x9 Squares...
+		Feature Specific Design Decision?
+	<COMPLETED> - 7. Enhanced Tic-Tac-Toe will continue to expand in depth levels...
+		Feature Specific Design Decision?
+	<COMPLETED> - 8. Extend Game to 4x4 Board
+		Feature Specific Design Decision?
+	<COMPLETED> - 9. Human Player is Biased...
+		Feature Specific Design Decision?
+	<NOT COMPLETED> - 10. Storing and Retrieving Game State
+		Feature Specific Design Decision?
+	<NOT COMPLETED> - 11. Store Players Game Statistics: Leaderboard
+		Feature Specific Design Decision?
+
+GameDesign v3.0	- Requirement III
+	<NOT COMPLETED> - 12. Super Tic-Tac-Toe Game Extends Enhanced Tic-Tac-Toe Game...
+		Feature Specific Design Decision?
+	<NOT COMPLETED> - 13. Design Winning and Losing Criterias On All Edges...
+		Feature Specific Design Decision?
+	<NOT COMPLETED> - 14. Incorporate Irregular shaped Hexagonal Boards
+		Feature Specific Design Decision?
+
+GameDesign v4.0	- Requirement IV
+	<NOT COMPLETED> - 15. Incorporate Biased Game Board
+		Feature Specific Design Decision?
+	<NOT COMPLETED> - 16.Incorporate Connect Four Game In Design
+		Feature Specific Design Decision?
+	<NOT COMPLETED> - 17. Discover Newer Abstract Types
+		Feature Specific Design Decision?
+	<NOT COMPLETED> - 18. Refactor and Reuse Code In Both Games
+		Feature Specific Design Decision?
+
+
+
+SECTION III: How to Run/Test Your Code?
+	Describe How To Run Your Code
+            1.Clone the project to the device.
+            2.in terminal :
+                     to compile javac src/comp/project/Main.java
+                     to run java main
+
+	Can I Run Test.java to test your whole source code? NO
+	Are you providing all Input/Output files to run Test Code using Test.java? NO
+
+	
+
